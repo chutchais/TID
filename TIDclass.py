@@ -81,14 +81,27 @@ class tid:
 
 
 			if layout_count == 9 :
+				emptyFixContainer=False
 				# print("Full (IN)/Empty(Out) 1 Box TID")
 				c2_text = self.get_line_text(layout,2)
+				c3_text = self.get_line_text(layout,3)
 
-				if len(c2_text) > 1 :
-					direction='in'
+				# if len(c2_text) > 1 :
+				# 	direction='in'
+				# 	# print ('Full (IN) 1 box')
+				# else:
+				# 	direction='out'
+				# 	# print ('Full (OUT) 1 box')
+				if c2_text=='-' and c3_text=='-' :
+					direction='out'
 					# print ('Full (IN) 1 box')
 				else:
-					direction='out'
+					y = c2_text.split('  ')
+					if len(y) > 1 :
+						direction='in'
+					else :
+						emptyFixContainer = True
+						direction='out'
 					# print ('Full (OUT) 1 box')
 
 				if direction=='in':
@@ -102,20 +115,27 @@ class tid:
 					c4_text = self.get_line_text(layout,4)
 					y= c4_text.split('  ')
 					data[direction]={}
-					if '-' in c4_text :
-						data[direction]['item1']={'container_no' : contain1_no,
-								'location' : contain1_loc,
-								'seal' : contain1_seal,
-								'line3':''}
+
+					if emptyFixContainer :
+						data[direction]['item1']={'container_no' : contain1_loc,
+									'location' : '',
+									'seal' : contain1_seal,
+									'line3':''}
 					else:
-						data[direction]['item1']={'container_no' : contain1_no,
-								'location' : contain1_loc,
-								'seal' : contain1_seal,
-								'line3' : ''}
-						data[direction]['item2']={'container_no' : contain2_no,
-								'location' : contain2_loc,
-								'seal' : contain2_seal,
-								'line3' : ''}
+						if '-' in c4_text :
+							data[direction]['item1']={'container_no' : contain1_no,
+									'location' : contain1_loc,
+									'seal' : contain1_seal,
+									'line3':''}
+						else:
+							data[direction]['item1']={'container_no' : contain1_no,
+									'location' : contain1_loc,
+									'seal' : contain1_seal,
+									'line3' : ''}
+							data[direction]['item2']={'container_no' : contain2_no,
+									'location' : contain2_loc,
+									'seal' : contain2_seal,
+									'line3' : ''}
 
 
 					# data[direction]['item1']={'container_no' : contain1_no,
@@ -134,9 +154,10 @@ class tid:
 					'seal' : contain2_seal}
 				else:
 					data['out']={}
-					data['out']['item1'] ={'container_no':'',
-						'location' : '',
-						'seal':''}
+					data['out']['item1'] ={'container_no':contain2_no,
+						'location' : contain2_loc,
+						'seal':contain2_seal,
+						'line3':''}
 						# print('')
 
 
@@ -284,10 +305,23 @@ class tid:
 		# 	return x[0].strip()
 
 	def get_license_plate_number(self,layout,tid_type):
-		if tid_type == 9 or tid_type == 7 or tid_type == 10:
+		if tid_type == 7 or tid_type == 10:
 			line_text = self.get_line_text(layout,1)
 			x = line_text.split('    ')
 			return x[len(x)-1].strip().replace(' ','')
+
+		if tid_type == 9 :
+			if len(self.get_line_text(layout,1))>2:
+				line_text = self.get_line_text(layout,2)
+				x = line_text.split('    ')
+				return x[0].strip().replace(' ','')
+			else :
+				line_text = self.get_line_text(layout,1)
+				x = line_text.split('    ')
+				return x[len(x)-1].strip().replace(' ','')
+
+
+
 
 
 		if tid_type == 11 :
@@ -328,9 +362,17 @@ class tid:
 
 	def get_container2(self,layout,tid_type):
 		if tid_type == 7 :
-			line_text = self.get_line_text(layout,2).strip()
-			x = line_text.split('    ')
-			return x[1].strip().replace(' ','')
+			# print ('Line #3 %s' % self.get_line_text(layout,3).strip())
+			if self.get_line_text(layout,3).strip()=='-':
+				line_text = self.get_line_text(layout,2).strip()
+				x = line_text.split('    ')
+				return x[1].strip().replace(' ','')
+			else:
+				# print ('get Container#2')
+				line_text = self.get_line_text(layout,3).strip()
+				x = line_text.split('    ')
+				return x[0].strip().replace(' ','')
+
 
 		if tid_type == 9 :
 			line_text = self.get_line_text(layout,4).strip()
@@ -368,9 +410,16 @@ class tid:
 
 	def get_location2(self,layout,tid_type):
 		if tid_type == 7 : #Full(in)2 boxes
-			line_text = self.get_line_text(layout,4).strip()
-			x = line_text.split('    ')
-			return x[2].strip().replace(' ','')
+			# print ('line #3 %s ' % self.get_line_text(layout,3).strip() )
+			if self.get_line_text(layout,3).strip()=='-' :
+				line_text = self.get_line_text(layout,4).strip()
+				x = line_text.split('    ')
+				return x[2].strip().replace(' ','')
+			else :
+				line_text = self.get_line_text(layout,5).strip()
+				# print ('line #5 %s ' % line_text )
+				x = line_text.split('    ')
+				return x[0].strip().replace(' ','')
 
 		if tid_type == 9 : #Full(out)2 boxes
 			line_text = self.get_line_text(layout,7).strip()
@@ -404,7 +453,9 @@ class tid:
 			line_text = self.get_line_text(layout,6).strip()
 			#2 Full boxes IN
 			x = line_text.split('    ')
-			return x[1].strip().replace(' ','').replace('-','')
+			return x[len(x)-1].strip().replace(' ','').replace('-','')
+
+
 
 		if tid_type == 9 : #Full(out)2 boxes
 			line_text = self.get_line_text(layout,8).strip()
