@@ -1,10 +1,4 @@
 import sys,getopt
-# from pdfminer.pdfparser import PDFParser, PDFDocument
-# from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-# from pdfminer.converter import PDFPageAggregator
-# from pdfminer.layout import LAParams, LTTextBox, LTTextLine, LTFigure, LTImage, LTChar
-# import json
-
 
 class tid:
 	def __init__(self, filename):
@@ -31,22 +25,17 @@ class tid:
 		return self.text_content[line_no].strip()
 
 	def getInfo(self):
-		# fp = open(self.filename, 'rb')
-		# parser = PDFParser(fp)
-		# doc = PDFDocument()
-		# parser.set_document(doc)
-		# doc.set_parser(parser)
-		# doc.initialize('')
-		# rsrcmgr = PDFResourceManager()
-		# laparams = LAParams()
-		# device = PDFPageAggregator(rsrcmgr, laparams=laparams)
-		# interpreter = PDFPageInterpreter(rsrcmgr, device)
-		# Process each page contained in the document.
 		self.text_content = []
 		with open(self.filename) as f:
 			self.text_content = f.readlines()
 
-
+		self.first_line_data = 0
+		for l in self.text_content:
+			if len(l[9:].strip())>1:
+				# print ('Data is %s' % l[9:].strip() )
+				# print ('First line is %s' % self.first_line_data )
+				break
+			self.first_line_data = self.first_line_data+1
 		# Initial
 		self.in_container1_exist =False
 		self.in_container2_exist =False
@@ -75,21 +64,59 @@ class tid:
 		print ('%s--%s--%s' % (container2,location2,seal2))
 		print ('%s--%s--%s' % (container3,location3,seal3))
 		print ('%s--%s--%s' % (container4,location4,seal4))
-		return ''
+		data = {
+					'filename' : self.filename,
+					'first_line' : self.first_line_data,
+					'company' : company ,
+					'license_no': lpn,
+					'call_card':call_card,
+					'time_stamp' : time_stamp,
+					'in' : {
+							'item1':{
+								'container_no':container1,
+								'location':location1,
+								'seal':seal1
+							},
+							'item2':{
+								'container_no':container2,
+								'location':location2,
+								'seal':seal2
+							}
+
+						},
+					'out' : {
+							'item1':{
+								'container_no':container3,
+								'location':location3,
+								'seal':seal3,
+								'line3':''
+							},
+							'item2':{
+								'container_no':container4,
+								'location':location4,
+								'seal':seal4,
+								'line3':''
+							}
+
+						}
+					}
+		return data
 	
 
 	def get_company(self):
-		line_text = self.get_line_string(3,1)
+		line_number = self.first_line_data
+		line_text = self.get_line_string(line_number,1)
 		return line_text
 
 
 	def get_license_plate_number(self):
-		line_text = self.get_line_string(4,1)
+		line_number = self.first_line_data+1
+		line_text = self.get_line_string(line_number,1)
 		return line_text
 
 
 	def get_container1(self):
-		line_number =7
+		line_number =line_number = self.first_line_data+4
 		line_text1 = self.get_line_string(line_number,1)
 		if line_text1 == '-' :
 			self.in_container1_exist = False 
@@ -157,10 +184,10 @@ class tid:
 	def get_location1(self):
 		if self.in_container4_exist:
 			line_number = self.in_container4_line + 3 + 2
-			print (line_number)
+			# print (line_number)
 		else :
 			line_number = self.in_container4_line +  2
-			print (line_number)
+			# print (line_number)
 
 		self.in_location_line1 = line_number
 		line_text1 = self.get_line_string(line_number,1)

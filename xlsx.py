@@ -1,7 +1,7 @@
 import sys,getopt
 import xlsxwriter
 from openpyxl import load_workbook
-from TIDclass import tid
+from TIDclass3 import tid
 
 import tempfile
 import win32api
@@ -19,6 +19,8 @@ class printTid:
 
 	def print(self):
 		# print ('Hello %s' % argv[0] )
+		only_filename = os.path.split(self.filename)[1]
+		head,tail = os.path.splitext(self.filename)
 		tid_data= tid(self.filename)
 		data = tid_data.getInfo()
 
@@ -64,7 +66,8 @@ class printTid:
 					sheet['I21'] = item_ins[item]['line3']
 
 
-		targetFile = self.targetDir + '\\' + os.path.split(self.filename)[1].replace('.pdf','.xlsx')
+		targetFile = self.targetDir + '\\' + os.path.split(self.filename)[1].replace('.','') +'.xlsx'
+		print ('Target file %s' % targetFile)
 		xfile.save(targetFile)
 		default_printer =  win32print.GetDefaultPrinter()
 		if self.printer == '' :
