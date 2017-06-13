@@ -43,11 +43,7 @@ class tid:
 				break
 			self.first_line_data = self.first_line_data+1
 
-		# Initial
-		# self.in_container1_exist =False
-		# self.in_container2_exist =False
-		# self.out_container1_exist =False
-		# self.out_container2_exist =False
+
 
 		company=self.get_company()
 		lpn = self.get_license_plate_number()
@@ -83,7 +79,7 @@ class tid:
 
 		line3_3=''
 		line3_4=''
-		
+
 		if self.container3_exist and self.container4_exist :
 			print ('Both Empty out')
 			
@@ -106,10 +102,6 @@ class tid:
 			seal3=location3_tmp
 			seal4=location4_tmp
 
-
-		# print ('%s--%s--%s' % (container2,location2,seal2))
-		# print ('%s--%s--%s' % (container3,location3,seal3))
-		# print ('%s--%s--%s' % (container4,location4,seal4))
 		data = {
 					'filename' : self.filename,
 					'first_line' : self.first_line_data,
