@@ -43,11 +43,13 @@ class printTid:
 					sheet['C3'] = item_ins[item]['location']
 					sheet['I3'] = item_ins[item]['container_no']
 					sheet['I4'] = item_ins[item]['seal']
+					sheet['L4'] = item_ins[item]['seal2']
 					vFirst=False
 				else:
 					sheet['C8'] = item_ins[item]['location']
 					sheet['I8'] = item_ins[item]['container_no']
 					sheet['I9'] = item_ins[item]['seal']
+					sheet['L9'] = item_ins[item]['seal2']
 
 		if 'out' in data:
 			item_ins =data['out']
