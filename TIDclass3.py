@@ -9,6 +9,7 @@ class tid:
 		self.container4_exist = False
 		self.MTY_exist =False
 		self.container_line_number = 0
+		self.first_line_data = 0
 
 	# @staticmethod	
 
@@ -41,9 +42,12 @@ class tid:
 
 		self.first_line_data = 0
 		for l in self.text_content:
-			if len(l[9:].strip())>1:
+			if len(l[9:].strip())>5:
 				break
 			self.first_line_data = self.first_line_data+1
+
+		if self.first_line_data == len(self.text_content)+1:
+			print ('Not found starting line')
 
 
 
