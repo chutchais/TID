@@ -21,7 +21,7 @@ class printTid:
 		rex2 = re.compile("^[0-9]{2}[A-Z][0-9]{4}[A-Z][0-9]$")
 		if rex1.match(location) or rex2.match(location) :
 			print ('Match Location')
-			return  location[:3] + '-' + location[3:5] + '-'+ location[-2:]
+			return  location[:3] + '-' + location[3:5]
 		else :
 			print ('Not valid Location')
 			return location
@@ -52,12 +52,14 @@ class printTid:
 			for item in item_ins:
 				if vFirst:
 					sheet['C3'] = self.convert_location(item_ins[item]['location'])
+					sheet['C6'] = item_ins[item]['location']
 					sheet['I3'] = item_ins[item]['container_no']
 					sheet['I4'] = item_ins[item]['seal']
 					sheet['L4'] = item_ins[item]['seal2']
 					vFirst=False
 				else:
 					sheet['C8'] = self.convert_location(item_ins[item]['location'])
+					sheet['C11'] = item_ins[item]['location']
 					sheet['I8'] = item_ins[item]['container_no']
 					sheet['I9'] = item_ins[item]['seal']
 					sheet['L9'] = item_ins[item]['seal2']
@@ -68,12 +70,14 @@ class printTid:
 			for item in item_ins:
 				if vFirst:
 					sheet['C14'] = self.convert_location(item_ins[item]['location'])
+					sheet['C17'] = item_ins[item]['location']
 					sheet['I14'] = item_ins[item]['container_no']
 					sheet['I15'] = item_ins[item]['seal']
 					sheet['I16'] = item_ins[item]['line3']
 					vFirst=False
 				else:
 					sheet['C19'] = self.convert_location(item_ins[item]['location'])
+					sheet['C22'] = item_ins[item]['location']
 					sheet['I19'] = item_ins[item]['container_no']
 					sheet['I20'] = item_ins[item]['seal']
 					sheet['I21'] = item_ins[item]['line3']
