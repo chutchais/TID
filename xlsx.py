@@ -7,7 +7,7 @@ import tempfile
 import win32api
 import win32print
 import os
-
+import re
 
 class printTid:
 	def __init__(self, filename,masterfile,targetDir,printer=''):
@@ -15,6 +15,17 @@ class printTid:
 		self.master_file = masterfile
 		self.targetDir = targetDir
 		self.printer = printer
+
+	def convert_location(self,location):
+		rex1 = re.compile("^[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]$")
+		rex2 = re.compile("^[0-9]{2}[A-Z][0-9]{4}[A-Z][0-9]$")
+		if rex1.match(location) or rex2.match(location) :
+			print ('Match Location')
+			return  location[:3] + '-' + location[3:5] + '-'+ location[-2:]
+		else :
+			print ('Not valid Location')
+			return location
+
 
 
 	def print(self):
@@ -40,13 +51,13 @@ class printTid:
 			vFirst=True
 			for item in item_ins:
 				if vFirst:
-					sheet['C3'] = item_ins[item]['location']
+					sheet['C3'] = self.convert_location(item_ins[item]['location'])
 					sheet['I3'] = item_ins[item]['container_no']
 					sheet['I4'] = item_ins[item]['seal']
 					sheet['L4'] = item_ins[item]['seal2']
 					vFirst=False
 				else:
-					sheet['C8'] = item_ins[item]['location']
+					sheet['C8'] = self.convert_location(item_ins[item]['location'])
 					sheet['I8'] = item_ins[item]['container_no']
 					sheet['I9'] = item_ins[item]['seal']
 					sheet['L9'] = item_ins[item]['seal2']
@@ -56,13 +67,13 @@ class printTid:
 			vFirst=True
 			for item in item_ins:
 				if vFirst:
-					sheet['C14'] = item_ins[item]['location']
+					sheet['C14'] = self.convert_location(item_ins[item]['location'])
 					sheet['I14'] = item_ins[item]['container_no']
 					sheet['I15'] = item_ins[item]['seal']
 					sheet['I16'] = item_ins[item]['line3']
 					vFirst=False
 				else:
-					sheet['C19'] = item_ins[item]['location']
+					sheet['C19'] = self.convert_location(item_ins[item]['location'])
 					sheet['I19'] = item_ins[item]['container_no']
 					sheet['I20'] = item_ins[item]['seal']
 					sheet['I21'] = item_ins[item]['line3']
@@ -71,6 +82,10 @@ class printTid:
 		targetFile = self.targetDir + '\\' + os.path.split(self.filename)[1].replace('.','') +'.xlsx'
 		print ('Target file %s' % targetFile)
 		xfile.save(targetFile)
+		xfile.close()
+		# xfile = None
+		# sheet.Close()
+		# xfile.Close()
 		default_printer =  win32print.GetDefaultPrinter()
 		if self.printer == '' :
 			curr_printer = default_printer
