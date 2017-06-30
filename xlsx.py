@@ -19,12 +19,15 @@ class printTid:
 	def convert_location(self,location):
 		rex1 = re.compile("^[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]$")
 		rex2 = re.compile("^[0-9]{2}[A-Z][0-9]{4}[A-Z][0-9]$")
-		if rex1.match(location) or rex2.match(location) :
+		if rex1.match(location) :
 			print ('Match Location')
 			return  location[:3] + '-' + location[3:5]
-		else :
-			print ('Not valid Location')
-			return location
+
+		if rex2.match(location) :
+			print ('Match Location')
+			return  location[:3] + '-' + location[3:5] + '-' + location[5:7]
+
+		return location
 
 
 
