@@ -134,27 +134,36 @@ if __name__ == "__main__":
 	atexit.register(lambda dir=ldir: shutil.rmtree(ldir))
 
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-m','--master', type=argparse.FileType('r', encoding='UTF-8'),
-						help="TID master file",required=True)
+
+	# parser.add_argument('-m','--master', type=argparse.FileType('r', encoding='UTF-8'),
+	# 					help="TID master file",required=True)
+
 	parser.add_argument('-p','--printer', default='',
 						help="Print to printer")
 
 	parser.add_argument('-i', '--input_directory', action=readable_dir, default=ldir)
 
-	# parser.add_argument("square", type=int,
-	#                     help="display a square of a given number")
+
 	parser.add_argument("-v", "--verbose", action="store_true",
 	                    help="increase output verbosity")
 	args = parser.parse_args()
-	# answer = args.square**2
-	fSrcExist=args.master
+	
+	# fSrcExist=args.master
+
 	printer=args.printer
 	if printer =='':
 		printer = win32print.GetDefaultPrinter()
 
+	import json
+	fname ='tid.json'
+	if os.path.isfile(fname) :
+		x = open(fname).read()
+		j = json.loads(x)
+		tid_file_name = j['tid_file']
+
 	# print ('********************************************************************')
 	print ('*******************Auto TID Start***********************************')
-	print ('Master TID file : %s' % args.master.name)
+	print ('Master TID file : %s' % tid_file_name)
 	print ('Working Directory : %s' % args.input_directory)
 	print ('Printer : %s' % printer)
 	print ('********************************************************************')
@@ -163,7 +172,7 @@ if __name__ == "__main__":
 	success_dir=""
 	error_dir = ""
 	working_dir = args.input_directory
-	master_file = args.master.name
+	master_file = '' # args.master.name
 	# print (printer)
 	directory= working_dir +"\output"
 	if not os.path.exists(directory):
