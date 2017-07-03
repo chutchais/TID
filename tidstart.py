@@ -10,7 +10,6 @@ import itertools, sys
 import time
 import threading
 from sys import stdin
-# from TIDclass import tid
 import glob
 from xlsx import printTid
 import win32print
@@ -25,41 +24,6 @@ class readable_dir(argparse.Action):
         else:
             raise argparse.ArgumentTypeError("readable_dir:{0} is not a readable dir".format(prospective_dir))
 
-# class Spinner:
-#     busy = False
-#     delay = 0.1
-
-#     @staticmethod
-#     def spinning_cursor():
-#         while 1: 
-#             for cursor in '|/-\\': yield cursor
-
-#     def __init__(self, delay=None):
-#         self.spinner_generator = self.spinning_cursor()
-#         if delay and float(delay): self.delay = delay
-
-#     def spinner_task(self):
-#         while self.busy:
-#             sys.stdout.write(next(self.spinner_generator))
-#             sys.stdout.flush()
-#             time.sleep(self.delay)
-#             sys.stdout.write('\b')
-#             sys.stdout.flush()
-
-#     def start(self):
-#         self.busy = True
-#         threading.Thread(target=self.spinner_task).start()
-
-#     def stop(self):
-#         self.busy = False
-#         time.sleep(self.delay)
-
-
-# while True:
-# 	# sys.stdout.write(next(spinner))
-# 	# sys.stdout.flush()
-# 	# sys.stdout.write('\b')
-# 	# sleep(0.2)
 
 def makeDirectory():
 	# print ('make dir')
@@ -99,34 +63,7 @@ def run():
 			print ('File not found : %s' % datetime.now() )
 
 		sleep(5)	
-		# try:
-		# 	# Check pdf in working folder
-		# 	tids = os.listdir(working_dir) #include 'output'
-		# 	if len(tids)>1:
-		# 		target_dir =makeDirectory()
-		# 		filename= working_dir + '\\' + tids[0]
-		# 		clstid= tid(filename)
-		# 		print (clstid.getInfo())
-				
-		# 		target_file=target_dir[0] +'\\' +tids[0]
-		# 		print (target_file)
-		# 		shutil.move(filename,target_file )
-		# 	else:
-		# 		print ('File not found : %s' % datetime.now() )
 
-		# 	sleep(5)
-		# except Exception:
-		# 	# spinner.stop()
-		# 	print ('Bye bye')
-		# 	return
-		#This won't catch KeyboardInterupt
-		
-		# choice = input()
-		# if choice == "a":
-		# 	print ("Type A")
-		# elif choice == "q":
-		# 	print ("Bye Bye")
-		# return
 
 if __name__ == "__main__":
 	# TEmporary Directory
@@ -142,6 +79,7 @@ if __name__ == "__main__":
 						help="Print to printer")
 
 	parser.add_argument('-i', '--input_directory', action=readable_dir, default=ldir)
+	parser.add_argument('-b', '--base_directory', action=readable_dir, default=ldir)
 
 
 	parser.add_argument("-v", "--verbose", action="store_true",
@@ -155,7 +93,10 @@ if __name__ == "__main__":
 		printer = win32print.GetDefaultPrinter()
 
 	import json
-	fname ='tid.json'
+	based_dir = args.base_directory 
+	fname = based_dir + "\configure.json"
+	print ("Configuration file on : %s" % fname)
+
 	if os.path.isfile(fname) :
 		x = open(fname).read()
 		j = json.loads(x)
@@ -183,37 +124,3 @@ if __name__ == "__main__":
 	spinner = itertools.cycle(['-', '/', '|', '\\'])
 
 	run()
-
-
-
-
-	# print (datetime.now())
-	# sleep(5)
-# if args.verbose:
-#     print ("the square of {} equals {}".format(args.square, answer))
-# else:
-#     print (answer)
-
-
-
-# import os.path
-# from shutil import copyfile
-# from datetime import datetime
-# from time import sleep
-
-# folder_src="D:\\sample_autofit\\"
-# folder_dst="T:\\_C\\ChutchaiS\\LOGS\\"
-# # check Target
-# while True:
-# 	fname="{:%Y-%m-%d}".format(datetime.now())+".txt"
-# 	fname_src = folder_src + fname
-# 	fname_dst = folder_dst + fname
-# 	fSrcExist=os.path.isfile(fname_src)
-
-# 	if fSrcExist:
-# 		copyfile(fname_src,fname_dst)
-# 		print ("Copy file " + fname + " Successful!!!")
-# 	else:
-# 		print ("File Not found " + fname_src )
-
-# 	sleep(5)
