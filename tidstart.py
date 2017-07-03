@@ -52,7 +52,7 @@ def run():
 			
 			print ('Print to %s' % printer)
 			# clstid= tid(filename)
-			# print (clstid.getInfo())
+			print (master_file)
 			x=printTid(filename,master_file,target_dir[0],printer)
 			x.print()
 			
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 						help="Print to printer")
 
 	parser.add_argument('-i', '--input_directory', action=readable_dir, default=ldir)
-	parser.add_argument('-b', '--base_directory', action=readable_dir, default=ldir)
+	parser.add_argument('-b', '--base_directory', action=readable_dir,default='')
 
 
 	parser.add_argument("-v", "--verbose", action="store_true",
@@ -88,14 +88,20 @@ if __name__ == "__main__":
 	
 	# fSrcExist=args.master
 
+	# print ('Real path file %s' % os.path.dirname(os.path.abspath(__file__)))
+
 	printer=args.printer
 	if printer =='':
 		printer = win32print.GetDefaultPrinter()
 
 	import json
 	based_dir = args.base_directory 
-	fname = based_dir + "\configure.json"
-	print ("Configuration file on : %s" % fname)
+	if based_dir =='' :
+		fname = os.path.dirname(os.path.abspath(__file__))  + "\configure.json"
+	else :
+		fname = based_dir + "\configure.json"
+
+	# print ("Configuration file on : %s" % fname)
 
 	if os.path.isfile(fname) :
 		x = open(fname).read()
@@ -104,6 +110,7 @@ if __name__ == "__main__":
 
 	# print ('********************************************************************')
 	print ('*******************Auto TID Start***********************************')
+	print ('Configuration path: %s' % fname)
 	print ('Master TID file : %s' % tid_file_name)
 	print ('Working Directory : %s' % args.input_directory)
 	print ('Printer : %s' % printer)
@@ -113,7 +120,7 @@ if __name__ == "__main__":
 	success_dir=""
 	error_dir = ""
 	working_dir = args.input_directory
-	master_file = '' # args.master.name
+	master_file = tid_file_name # args.master.name
 	# print (printer)
 	directory= working_dir +"\output"
 	if not os.path.exists(directory):

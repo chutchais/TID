@@ -34,13 +34,13 @@ class printTid:
 	def print(self):
 		# print ('Hello %s' % argv[0] )
 		# Get TID XLS file from tid.json file
-		import json
-		fname ='tid.json'
-		if os.path.isfile(fname) :
-			x = open(fname).read()
-			j = json.loads(x)
-			tid_file_name = j['tid_file']
-			print ('TID file name from tid.json : %s' % tid_file_name)
+		# import json
+		# fname ='configure.json'
+		# if os.path.isfile(fname) :
+		# 	x = open(fname).read()
+		# 	j = json.loads(x)
+		# 	tid_file_name = j['tid_file']
+		# 	print ('TID file name from tid.json : %s' % tid_file_name)
 		#=========================================
 		only_filename = os.path.split(self.filename)[1]
 		head,tail = os.path.splitext(self.filename)
@@ -48,8 +48,9 @@ class printTid:
 		data = tid_data.getInfo()
 
 		print(data)
+		print ('Master file %s' % self.master_file)
 
-		xfile = load_workbook(tid_file_name)
+		xfile = load_workbook(self.master_file)
 		sheet = xfile.get_sheet_by_name('master')
 
 		# Fill Master data
