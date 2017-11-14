@@ -58,10 +58,6 @@ def run():
 			print (master_file)
 			x=printTid(filename,master_file,target_dir[0],printer)
 			result = x.print()
-						
-			target_file=target_dir[0] +'\\' + tail
-			print (target_file)
-			shutil.move(tids[0],target_file )
 
 			# Start close Ticket
 			# 1)Check file d:\ticket\tickget.json
@@ -80,7 +76,10 @@ def run():
     				str_r = r.data.decode("utf-8")
     				print ('Returned data is  %s' % str_r)
 			# End close Ticket
-
+			
+			target_file=target_dir[0] +'\\' + tail
+			print (target_file)
+			shutil.move(tids[0],target_file )
 		else:
 			print ('File not found : %s' % datetime.now() )
 

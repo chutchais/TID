@@ -127,6 +127,7 @@ class printTid:
 		win32print.SetDefaultPrinter(default_printer) #set default back to original
 
 		print ('Print successful!!')
+		return True
 
 # if __name__ == "__main__":
 #     sys.exit(main(sys.argv[1:]))
