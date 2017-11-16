@@ -42,8 +42,8 @@ def makeDirectory():
 
 def run():
 	import urllib3
-    http = urllib3.PoolManager()
-    print ('Intial HTTP successful')
+	http = urllib3.PoolManager()
+	print ('Intial HTTP successful')
 	while True:
 		tids = glob.glob(working_dir + '\\*.*')
 		# for f in glob.glob(working_dir + '\\*.pdf'):
@@ -59,27 +59,30 @@ def run():
 			x=printTid(filename,master_file,target_dir[0],printer)
 			result = x.print()
 
+			target_file=target_dir[0] +'\\' + tail
+			print (target_file)
+			shutil.move(tids[0],target_file )
+
 			# Start close Ticket
 			# 1)Check file d:\ticket\tickget.json
 			print ('1)Check d:\Tiket.json file')
 			fname_ticket= 'd:\\ticket\\ticket.json'
 			if os.path.isfile(fname_ticket) :
-                print  ('Found ticket ticket file')
-                dict = eval(open(fname_ticket).read())
-	            if 'barcode' in dict:
-	            	ticket = dict['barcode']
+				print  ('Found ticket ticket file')
+				dict = eval(open(fname_ticket).read())
+				if 'barcode' in dict:
+					ticket = dict['barcode']
 					# 2)Get ticket(barcode) from file.
 					print ('Current Ticket is %s' % ticket)
 					# 3)Post to URL to close Ticket
-					url = 'http://192.168.10.54:8080/e-Ticket/checking/activate.php?status=N&barcode=' + ticket
-    				r = http.request('GET', url)
-    				str_r = r.data.decode("utf-8")
-    				print ('Returned data is  %s' % str_r)
+					url = 'http://192.168.10.54:8080/e-Ticket/checking/activate.php?status=Y&barcode=' + ticket
+					r = http.request('GET', url)
+					str_r = r.data.decode("utf-8")
+					print ('Returned data is  %s' % str_r)
+				os.remove(fname_ticket)
+				print ('Remove Ticket file--Success!!!')
 			# End close Ticket
 			
-			target_file=target_dir[0] +'\\' + tail
-			print (target_file)
-			shutil.move(tids[0],target_file )
 		else:
 			print ('File not found : %s' % datetime.now() )
 
