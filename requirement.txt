@@ -37,3 +37,4 @@ traitlets==4.3.2
 wcwidth==0.1.7
 xlrd==1.0.0
 XlsxWriter==0.9.6
+playsound==1.2.2

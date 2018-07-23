@@ -17,3 +17,4 @@ pip install --index-url=http://pypi.python.org/simple/ --trusted-host pypi.pytho
 pip install --index-url=http://pypi.python.org/simple/ --trusted-host pypi.python.org virtualenv==15.1.0
 pip install --index-url=http://pypi.python.org/simple/ --trusted-host pypi.python.org xlrd==1.0.0
 pip install --index-url=http://pypi.python.org/simple/ --trusted-host pypi.python.org XlsxWriter==0.9.6
+pip install --index-url=http://pypi.python.org/simple/ --trusted-host pypi.python.org playsound

@@ -15,14 +15,14 @@ from xlsx import printTid
 import win32print
 
 class readable_dir(argparse.Action):
-    def __call__(self,parser, namespace, values, option_string=None):
-        prospective_dir=values
-        if not os.path.isdir(prospective_dir):
-            raise argparse.ArgumentTypeError("readable_dir:{0} is not a valid path".format(prospective_dir))
-        if os.access(prospective_dir, os.R_OK):
-            setattr(namespace,self.dest,prospective_dir)
-        else:
-            raise argparse.ArgumentTypeError("readable_dir:{0} is not a readable dir".format(prospective_dir))
+	def __call__(self,parser, namespace, values, option_string=None):
+		prospective_dir=values
+		if not os.path.isdir(prospective_dir):
+			raise argparse.ArgumentTypeError("readable_dir:{0} is not a valid path".format(prospective_dir))
+		if os.access(prospective_dir, os.R_OK):
+			setattr(namespace,self.dest,prospective_dir)
+		else:
+			raise argparse.ArgumentTypeError("readable_dir:{0} is not a readable dir".format(prospective_dir))
 
 
 def makeDirectory():
@@ -42,8 +42,8 @@ def makeDirectory():
 
 def run():
 	import urllib3
-    http = urllib3.PoolManager()
-    print ('Intial HTTP successful')
+	http = urllib3.PoolManager()
+	print ('Intial HTTP successful')
 	while True:
 		tids = glob.glob(working_dir + '\\*.*')
 		# for f in glob.glob(working_dir + '\\*.pdf'):
@@ -63,28 +63,47 @@ def run():
 			print (target_file)
 			shutil.move(tids[0],target_file )
 
+			# Play sound afer print TID
+			# Add on July 23,2018
+			play_sound()
+
+
 			# Start close Ticket
 			# 1)Check file d:\ticket\tickget.json
 			print ('1)Check d:\Tiket.json file')
 			fname_ticket= 'd:\\ticket\\ticket.json'
 			if os.path.isfile(fname_ticket) :
-                print  ('Found ticket ticket file')
-                dict = eval(open(fname_ticket).read())
-	            if 'barcode' in dict:
-	            	ticket = dict['barcode']
+				print  ('Found ticket ticket file')
+				dict = eval(open(fname_ticket).read())
+				if 'barcode' in dict:
+					ticket = dict['barcode']
 					# 2)Get ticket(barcode) from file.
 					print ('Current Ticket is %s' % ticket)
 					# 3)Post to URL to close Ticket
 					url = 'http://192.168.10.54:8080/e-Ticket/checking/activate.php?status=N&barcode=' + ticket
-    				r = http.request('GET', url)
-    				str_r = r.data.decode("utf-8")
-    				print ('Returned data is  %s' % str_r)
+					r = http.request('GET', url)
+					str_r = r.data.decode("utf-8")
+					print ('Returned data is  %s' % str_r)
 			# End close Ticket
 
 		else:
 			print ('File not found : %s' % datetime.now() )
 
-		sleep(5)	
+		sleep(5)
+
+# Add by Chutchai S , on July 23,2018
+# To play sound after print-out TID
+def play_sound():
+	try:
+		from pathlib import Path
+		truck_file = Path('sounds/truck.wav')
+		from playsound import playsound
+		if truck_file.exists():
+			playsound(truck_file)
+		else :
+			print ('Not found sounds/truck.wav file')
+	except:
+		print ('Error on playing truck WAV file')
 
 
 if __name__ == "__main__":
@@ -105,7 +124,7 @@ if __name__ == "__main__":
 
 
 	parser.add_argument("-v", "--verbose", action="store_true",
-	                    help="increase output verbosity")
+						help="increase output verbosity")
 	args = parser.parse_args()
 	
 	# fSrcExist=args.master
