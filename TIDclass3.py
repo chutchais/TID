@@ -1,4 +1,5 @@
 import sys,getopt
+import re
 
 class tid:
 	def __init__(self, filename):
@@ -11,6 +12,19 @@ class tid:
 		self.container_line_number = 0
 
 	# @staticmethod	
+
+	def convert_location(self,location):
+		rex1 = re.compile("^[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]$")
+		rex2 = re.compile("^[0-9]{2}[A-Z][0-9]{4}[A-Z][0-9]$")
+		if rex1.match(location) :
+			print ('Match Location')
+			return  location[:3] + '-' + location[3:5]
+
+		if rex2.match(location) :
+			print ('Match Location')
+			return  location[:3] + '-' + location[3:5] + '-' + location[5:7]
+
+		return location
 
 	def get_layout_count(self,layout):
 		return len(layout)
@@ -81,6 +95,11 @@ class tid:
 		seal2_1,seal2_2,seal2_3,seal2_4= self.get_seal2()
 		print ('Seal2 %s' % seal2_1)
 
+# Add by Chutchai S on Oct 30,2018
+# To get Damage message
+		damage3,damage4,damage1,damage2= self.get_damage()
+		print ('Damage %s %s' % (damage3,damage4))
+# finished
 		import re
 		rex = re.compile("^[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]$")
 
@@ -114,44 +133,143 @@ class tid:
 			seal3=a[2]
 			seal4=a[3]
 
+		# data = {
+		# 		'company': company,
+		# 	    'containers': [
+		# 	        {
+		# 	            'number': container1,
+		# 	            'position': self.convert_location(location1),
+		# 	            'seal1': seal1.replace('L SL ',''),
+		# 	            'seal2': seal2_1.replace('L SL ',''),
+		# 	            'trans_type': 'RE',
+		# 	            'damage': damage1,
+		# 	        },
+		# 	        {
+		# 	            'number': container2,
+		# 	            'position': self.convert_location(location2),
+		# 	            'seal1': seal2.replace('L SL ',''),
+		# 	            'seal2': seal2_2.replace('L SL ',''),
+		# 	            'trans_type': 'RE',
+		# 	            'damage': damage2,
+		# 	        },
+		# 	        {
+		# 	            'number': container3,
+		# 	            'position': self.convert_location(location3),
+		# 	            'seal1': seal3.replace('L SL ',''),
+		# 	            'seal2': line3_3.replace('L SL ',''),
+		# 	            'trans_type': 'DI',
+		# 	            'damage': damage3,
+		# 	        },
+		# 	        {
+		# 	            'number': container4,
+		# 	            'position': self.convert_location(location4),
+		# 	            'seal1': seal4.replace('L SL ',''),
+		# 	            'seal2': line3_4.replace('L SL ',''),
+		# 	            'trans_type': 'DI',
+		# 	            'damage': damage4,
+		# 	        }
+		# 	    ],
+		# 	    'document': 'TID',
+		# 	    'license': call_card,
+		# 	    'printer' : 'EPSON TM-T82',
+		# 	    'start': time_stamp,
+		# 	    'ttl': 3600
+		# }
 		data = {
-					'filename' : self.filename,
-					'first_line' : self.first_line_data,
-					'company' : company ,
-					'license_no': lpn,
-					'call_card':call_card,
-					'time_stamp' : time_stamp,
-					'in' : {
-							'item1':{
-								'container_no':container1,
-								'location':location1,
-								'seal':seal1,
-								'seal2':seal2_1
-							},
-							'item2':{
-								'container_no':container2,
-								'location':location2,
-								'seal':seal2,
-								'seal2':seal2_2
-							}
+		'company': company,
+	    'containers': [],
+	    'document': 'TID',
+	    'license': call_card,
+	    'printer' : 'EPSON TM-T82',
+	    'start': time_stamp,
+	    'ttl': 3600,
+	    'note' : lpn
+		}
 
-						},
-					'out' : {
-							'item1':{
-								'container_no':container3,
-								'location':location3,
-								'seal':seal3,
-								'line3':line3_3
-							},
-							'item2':{
-								'container_no':container4,
-								'location':location4,
-								'seal':seal4,
-								'line3':line3_4
-							}
+		if self.container1_exist :
+			data['containers'].append(
+			      {
+			            'number': container1,
+			            'position': self.convert_location(location1),
+			            'seal1': seal1.replace('L SL ',''),
+			            'seal2': seal2_1.replace('L SL ',''),
+			            'trans_type': 'RE',
+			            'damage': damage1,
+	        	})
+		if self.container2_exist :
+			data['containers'].append(
+		        {
+		            'number': container2,
+		            'position': self.convert_location(location2),
+		            'seal1': seal2.replace('L SL ',''),
+		            'seal2': seal2_2.replace('L SL ',''),
+		            'trans_type': 'RE',
+		            'damage': damage2,
+		        })
+		if self.container3_exist :
+			data['containers'].append(
+		        {
+		            'number': container3,
+		            'position': self.convert_location(location3),
+		            'seal1': seal3.replace('L SL ',''),
+		            'seal2': line3_3.replace('L SL ',''),
+		            'trans_type': 'DI',
+		            'damage': damage3,
+		        })
+		if self.container4_exist :
+			data['containers'].append(
+		        {
+		            'number': container4,
+		            'position': self.convert_location(location4),
+		            'seal1': seal4.replace('L SL ',''),
+		            'seal2': line3_4.replace('L SL ',''),
+		            'trans_type': 'DI',
+		            'damage': damage4,
+		        })
+		# print(data)
+		# data = {
+		# 			'filename' : self.filename,
+		# 			'first_line' : self.first_line_data,
+		# 			'company' : company ,
+		# 			'license_no': lpn,
+		# 			'call_card':call_card,
+		# 			'time_stamp' : time_stamp,
+		# 			'in' : {
+		# 					'item1':{
+		# 						'container_no':container1,
+		# 						'location':location1,
+		# 						'seal':seal1,
+		# 						'seal2':seal2_1,
+		# 						'damage':damage1
+		# 					},
+		# 					'item2':{
+		# 						'container_no':container2,
+		# 						'location':location2,
+		# 						'seal':seal2,
+		# 						'seal2':seal2_2,
+		# 						'damage':damage2
+		# 					}
 
-						}
-					}
+		# 				},
+		# 			'out' : {
+		# 					'item1':{
+		# 						'container_no':container3,
+		# 						'location':location3,
+		# 						'seal':seal3,
+		# 						'line3':line3_3,
+		# 						'damage':damage3
+		# 					},
+		# 					'item2':{
+		# 						'container_no':container4,
+		# 						'location':location4,
+		# 						'seal':seal4,
+		# 						'line3':line3_4,
+		# 						'damage':damage4
+		# 					}
+
+		# 				}
+		# 			}
+		# print(data)
 		return data
 	
 	def getRaw(self):
@@ -296,6 +414,15 @@ class tid:
 		return self.split_data(self.get_line_string(line_number,1))
 
 
+# Add by Chutchai S on Oct 30,2018
+# To get Damage message
+	def get_damage(self):
+		line_number = self.seal2_line_number+1
+		line_text1 = self.get_line_string(line_number,1)
+		# self.seal2_line_number = line_number
+		print ('line of Damage: %s' % line_number)
+		print (self.split_data(line_text1))
+		return self.split_data(self.get_line_string(line_number,1))
 
 		# if len(line_text1.split('-'))<2:
 		# 	# assume they are empty box out

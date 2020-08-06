@@ -12,11 +12,7 @@ import threading
 from sys import stdin
 import glob
 from xlsx import printTid
-# import win32print
-
-import platform
-import socket
-
+import win32print
 
 class readable_dir(argparse.Action):
 	def __call__(self,parser, namespace, values, option_string=None):
@@ -59,13 +55,12 @@ def run():
 			
 			print ('Print to %s' % printer)
 			# clstid= tid(filename)
-			# print (master_file)
-			master_file=''
-			x = printTid(filename,master_file,target_dir[0],printer,pc_name)
+			print (master_file)
+			x=printTid(filename,master_file,target_dir[0],printer)
 			result = x.print()
 						
 			target_file=target_dir[0] +'\\' + tail
-			print ('Target File :%s' % target_file)
+			print (target_file)
 			shutil.move(tids[0],target_file )
 
 			# Play sound afer print TID
@@ -73,24 +68,23 @@ def run():
 			play_sound()
 
 
-
-			# # Start close Ticket
-			# # 1)Check file d:\ticket\tickget.json
-			# print ('1)Check d:\Tiket.json file')
-			# fname_ticket= 'd:\\ticket\\ticket.json'
-			# if os.path.isfile(fname_ticket) :
-			# 	print  ('Found ticket ticket file')
-			# 	dict = eval(open(fname_ticket).read())
-			# 	if 'barcode' in dict:
-			# 		ticket = dict['barcode']
-			# 		# 2)Get ticket(barcode) from file.
-			# 		print ('Current Ticket is %s' % ticket)
-			# 		# 3)Post to URL to close Ticket
-			# 		url = 'http://192.168.10.54:8080/e-Ticket/checking/activate.php?status=N&barcode=' + ticket
-			# 		r = http.request('GET', url)
-			# 		str_r = r.data.decode("utf-8")
-			# 		print ('Returned data is  %s' % str_r)
-			# # End close Ticket
+			# Start close Ticket
+			# 1)Check file d:\ticket\tickget.json
+			print ('1)Check d:\Tiket.json file')
+			fname_ticket= 'd:\\ticket\\ticket.json'
+			if os.path.isfile(fname_ticket) :
+				print  ('Found ticket ticket file')
+				dict = eval(open(fname_ticket).read())
+				if 'barcode' in dict:
+					ticket = dict['barcode']
+					# 2)Get ticket(barcode) from file.
+					print ('Current Ticket is %s' % ticket)
+					# 3)Post to URL to close Ticket
+					url = 'http://192.168.10.54:8080/e-Ticket/checking/activate.php?status=N&barcode=' + ticket
+					r = http.request('GET', url)
+					str_r = r.data.decode("utf-8")
+					print ('Returned data is  %s' % str_r)
+			# End close Ticket
 
 		else:
 			print ('File not found : %s' % datetime.now() )
@@ -102,18 +96,15 @@ def run():
 def play_sound():
 	try:
 		from pathlib import Path
-		file_wav = 'truck2.wav'
-		truck_file = Path(file_wav)
+		truck_file = Path('sounds/truck.wav_')
 		from playsound import playsound
 		if truck_file.exists():
-			playsound(file_wav)
-			#playsound('c:\\users\\gate\\sounds\\truck2.wav')
+			playsound(truck_file)
 		else :
-			print ('Not found sounds/truck2.wav file')
+			print ('Not found sounds/truck.wav file')
 	except:
 		print ('Error on playing truck WAV file')
 
-'BIXOLON SRP-330II'
 
 if __name__ == "__main__":
 	# TEmporary Directory
@@ -141,16 +132,8 @@ if __name__ == "__main__":
 	# print ('Real path file %s' % os.path.dirname(os.path.abspath(__file__)))
 
 	printer=args.printer
-	# if printer =='':
-	# 	printer = win32print.GetDefaultPrinter()
-
-	'---------Added on Nov 21,2019 to get PC name---'
-	pc_name = platform.node()
-	if pc_name =='':
-		pc_name = socket.gethostname()
-	if pc_name == '' :
-		pc_name=os.environ['COMPUTERNAME']
-	# ----------------------------------------------
+	if printer =='':
+		printer = win32print.GetDefaultPrinter()
 
 	import json
 	based_dir = args.base_directory 
@@ -164,26 +147,21 @@ if __name__ == "__main__":
 	if os.path.isfile(fname) :
 		x = open(fname).read()
 		j = json.loads(x)
-		# tid_file_name = j['tid_file']
-		# qr_server = j['QR']
-		# qr_size = j['QR_size']
-		print_server = j['print_service']
+		tid_file_name = j['tid_file']
 
 	# print ('********************************************************************')
-	print ('*******************New TID Start***********************************')
-	# print ('Configuration path : %s' % fname)
-	print ('Printing Service : %s' % print_server)
-	# print ('Master TID file : %s' % tid_file_name)
+	print ('*******************Auto TID Start***********************************')
+	print ('Configuration path: %s' % fname)
+	print ('Master TID file : %s' % tid_file_name)
 	print ('Working Directory : %s' % args.input_directory)
-	print ('PC Name : %s' % pc_name)
-	# print ('QR Server : %s , size : %s' % (qr_server,qr_size))
+	print ('Printer : %s' % printer)
 	print ('********************************************************************')
 
 	# make output in working directory
 	success_dir=""
 	error_dir = ""
 	working_dir = args.input_directory
-	# master_file = tid_file_name # args.master.name
+	master_file = tid_file_name # args.master.name
 	# print (printer)
 	directory= working_dir +"\output"
 	if not os.path.exists(directory):
