@@ -175,15 +175,20 @@ class tid:
 		# 	    'start': time_stamp,
 		# 	    'ttl': 3600
 		# }
+		# Modify on Aug 11,2020
+		#Add callcard item
+		#license = lpn
+		#note = ''
 		data = {
 		'company': company,
 	    'containers': [],
 	    'document': 'TID',
-	    'license': call_card,
-	    'printer' : 'EPSON TM-T82',
+	    'license': lpn,
+	    'printer' : '',
 	    'start': time_stamp,
 	    'ttl': 3600,
-	    'note' : lpn
+	    'note' : 'call card %s' % call_card,
+		'callcard': call_card
 		}
 
 		if self.container1_exist :
