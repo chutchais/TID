@@ -76,6 +76,23 @@ class tid:
 		c=self.get_service()
 		container1,container2,container3,container4 = self.get_container()
 
+		# Added on Jan 4,2021 -- To improve container recognize
+		# import re
+		# rex = re.compile("^[A-Z]{4}[0-9]{7}$")
+
+		# if rex.match(container1.strip().replace(' ','')):
+		# 	self.container1_exist = True
+
+		# if rex.match(container2.strip().replace(' ','')):
+		# 	self.container2_exist = True
+
+		# if rex.match(container3.strip().replace(' ','')):
+		# 	self.container3_exist = True
+
+		# if rex.match(container4.strip().replace(' ','')):
+		# 	self.container4_exist = True
+
+		# Comment on Jan 4,2021
 		if len(container1)>1:
 			self.container1_exist = True
 
@@ -90,7 +107,7 @@ class tid:
 
 
 		location1,location2,location3,location4 = self.get_location()
-		seal1,seal2,seal3,seal4 = self.get_seal()
+		seal1,seal2,seal3,seal4 = self.get_seal(container1,container2,container3,container4)
 
 		seal2_1,seal2_2,seal2_3,seal2_4= self.get_seal2()
 		print ('Seal2 %s' % seal2_1)
@@ -130,8 +147,9 @@ class tid:
 			line3_3 = seal3
 			line3_4 = seal4
 
-			seal3=a[2]
-			seal4=a[3]
+			# Comment on Jan 4,2021 --To improve on Seal
+			# seal3=a[2]
+			# seal4=a[3]
 
 		# data = {
 		# 		'company': company,
@@ -340,7 +358,32 @@ class tid:
 		if self.MTY_exist :
 			# a[2]=s[0]
 			# a[3]=s[1]
-			b = a[0],a[1],s[0],s[1]
+
+			# Comment on Jan 4,2021
+			# b = a[0],a[1],s[0],s[1]
+
+			# Added on Jan 4,2021 -- To fix mix of MTY and Fixed container Out.
+			c1 = a[0]
+			c2 = a[1]
+			c3 = s[0]
+			c4 = s[1]
+			import re
+			rex = re.compile("^[A-Z]{4}[0-9]{7}$")
+			if rex.match(a[2].strip().replace(' ','')):
+				print (f'{a[2]} = is Container')
+				c3 = a[2]
+			else :
+				print(f'{a[2]} = is Not Container')
+				c3 = s[0]
+
+			if rex.match(a[3].strip().replace(' ','')) :
+				print(f'{a[3]}=  is Container')
+				c4 = a[3]
+			else :
+				print(f'{a[3]}=  is Not Container')
+				c4 = s[0]
+			b = c1,c2,c3,c4
+			print (f'New container : {b}')
 			return b
 
 		return a
@@ -369,7 +412,7 @@ class tid:
 			self.location_line_number = line_number+1
 		return self.split_data(line_text1)#line_text1.split('    ')
 
-	def get_seal(self):
+	def get_seal(self,container1='',container2='',container3='',container4=''):
 		line_number = self.location_line_number+1
 		line_text1 = self.get_line_string(line_number,1)
 		self.seal_line_number = line_number
@@ -393,29 +436,46 @@ class tid:
 			data1 = x[0]
 			data2 = x[1]
 
-		if self.container3_exist:
-			data3 = x[2]
+		# Comment on Jan 4,2021 -- TO imporve for Fixed container out
+		# if self.container3_exist:
+		# 	data3 = x[2]
 
-		if self.container3_exist and (not self.container1_exist):
-			data3 = x[0]
+		# if self.container3_exist and (not self.container1_exist):
+		# 	data3 = x[0]
 
-		if self.container3_exist and self.container4_exist and (not self.container1_exist):
-			data3 = x[0]
-			data4 = x[1]
+		# if self.container3_exist and self.container4_exist and (not self.container1_exist):
+		# 	data3 = x[0]
+		# 	data4 = x[1]
 
-		if self.container3_exist and self.container4_exist and x[0]=='-' and x[1]=='-' :
-			data3 = x[2]
-			data4 = x[3]
+		# if self.container3_exist and self.container4_exist and x[0]=='-' and x[1]=='-' :
+		# 	data3 = x[2]
+		# 	data4 = x[3]
+
+		import re
+		rex = re.compile("^[A-Z]{4}[0-9]{7}$")
+
+		# if rex.match(container1.strip().replace(' ','')):
+		# 	self.container1_exist = True
+
+		if rex.match(container3.strip().replace(' ','')):
+			if not self.container1_exist and not self.container2_exist :
+				data3 = x[0]
+		
+		if rex.match(container4.strip().replace(' ','')):
+			if not self.container1_exist and not self.container2_exist :
+				data4 = x[0]
 
 
 
-		return data1,data2,data3,data4
+		seal1 = data1,data2,data3,data4
+		print(f'Seal1 :{seal1}')
+		return seal1
 
-	def get_seal2(self):
+	def get_seal2(self,container1='',container2='',container3='',container4=''):
 		line_number = self.seal_line_number+1
 		line_text1 = self.get_line_string(line_number,1)
 		self.seal2_line_number = line_number
-		print ('line %s' % line_number)
+		print (f'Seal2 {self.split_data(self.get_line_string(line_number,1))}')
 		return self.split_data(self.get_line_string(line_number,1))
 
 
