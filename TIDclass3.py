@@ -144,12 +144,8 @@ class tid:
 			# else:
 			# 	location4=''
 
-			line3_3 = seal3
-			line3_4 = seal4
-
-			# Comment on Jan 4,2021 --To improve on Seal
-			# seal3=a[2]
-			# seal4=a[3]
+			seal3=a[2]
+			seal4=a[3]
 
 		# data = {
 		# 		'company': company,
